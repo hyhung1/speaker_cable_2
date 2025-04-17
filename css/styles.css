@@ -1,0 +1,254 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f6f8;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding-top: 30px;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo-container {
+    margin-right: 20px;
+}
+
+#logo {
+    height: 60px;
+    width: auto;
+}
+
+h1 {
+    margin: 0;
+    flex: 1;
+}
+
+.input-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+input[type="number"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100px;
+}
+
+button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.table-container {
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#resetBtn {
+    background-color: #f44336;
+}
+
+#resetBtn:hover {
+    background-color: #d32f2f;
+}
+
+.input-cell {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.example-info {
+    background-color: #f0f8ff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-left: 4px solid #4285f4;
+    border-radius: 3px;
+}
+
+.example-info h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #4285f4;
+}
+
+.example-info p {
+    margin: 5px 0;
+}
+
+.footer {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+    font-size: 0.9em;
+}
+
+.footer h3 {
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.footer ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.footer li {
+    margin-bottom: 5px;
+}
+
+.black-text {
+    color: #000;
+    font-weight: normal;
+    margin-top: 10px;
+}
+
+.note {
+    font-style: italic;
+}
+
+.normal {
+    color: green;
+    font-weight: bold;
+}
+
+.abnormal {
+    color: red;
+    font-weight: bold;
+}
+
+#downloadPdfBtn {
+    background-color: #217346; /* Excel green color */
+}
+
+#downloadPdfBtn:hover {
+    background-color: #1e6a3e; /* Darker Excel green */
+}
+
+/* Remove PDF-specific styles that are no longer needed */
+.pdf-container, .pdf-table, .pdf-footer {
+    /* These classes can be removed as they're no longer used */
+}
+
+/* Improve PDF styles */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: white !important;
+    }
+    
+    .container {
+        width: 100%;
+        margin: 0 auto;
+        padding: 15px;
+        background-color: white !important;
+        box-shadow: none !important;
+    }
+    
+    .header-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    th, td {
+        border: 1px solid #ddd !important;
+        padding: 8px !important;
+        text-align: center !important;
+    }
+    
+    th {
+        background-color: #f2f2f2 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .normal {
+        background-color: #e6ffe6 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .abnormal {
+        background-color: #ffcccc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .actions {
+        display: none !important;
+    }
+}

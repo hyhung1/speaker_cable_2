@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cable Sizing Calculation</title>
+    <style>
+        /* CSS styles from the original application */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-container {
+            margin-right: 20px;
+        }
+        
+        #logo {
+            height: 110px;
+            width: 300px;
+            margin-top: -20px; /* This moves the logo up by 10px */
+        }
+        
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+        
+        .example-info {
+            background-color: #e6f7ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1890ff;
+        }
+        
+        .black-text {
+            color: #333;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        
+        label {
+            margin-right: 5px;
+        }
+        
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .input-cell {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .normal {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .abnormal {
+            color: red;
+            font-weight: bold;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #e0e0e0;
+        }
+        
+        .footer h3 {
+            color: #333;
+        }
+        
+        .footer ul {
+            padding-left: 20px;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 9999;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .error {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .upload-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        .file-input-container input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            cursor: pointer;
+            display: block;
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .file-input-label:hover {
+            background-color: #40a9ff;
+        }
+        
+        .file-name {
+            margin-left: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="{{ url_for('static', path='vector_logo1.png') }}" alt="Logo" id="logo">
+            </div>
+            <h1 style="margin-left: 120px; margin-top: +15px; font-size: 38px;">Cable Sizing Calculation</h1>
+        </div>
+        
+        <div class="example-info" style="background-color: #e6f7ff; border-left: 4px solid #1890ff;">
+            <p class="black-text">Cabling between the system cabinet and speakers which depend on the cable length and the power, the cross section is calculated as follow data input:</p>
+            <p class="black-text">Note: For alarm and evacuation that is most important scenarios. Therefore, the maximum power loss should be -3 dB. This correspond to a volumne difference of -3 dB as recommendation</p>
+        </div>
+        
+        <!-- Add new upload section -->
+        <div class="upload-section">
+            <div class="file-input-container">
+                <label for="excelFile" class="file-input-label">Upload Excel File</label>
+                <input type="file" id="excelFile" accept=".xlsx, .xls" />
+            </div>
+            <span id="fileName" class="file-name">No file selected</span>
+            <button id="uploadExcelBtn">Load Data</button>
+        </div>
+        
+        <div class="input-section">
+            <label for="cableCount"><strong>Number of Speakers:</strong></label>
+            <input type="number" id="cableCount" min="1" value="10">
+            
+            <label for="defaultCableType"><strong>Cable Type (mm²):</strong></label>
+            <input type="number" id="defaultCableType" min="0.01" step="0.01" value="2.5">
+            
+            <button id="generateTable">Generate Table</button>
+        </div>
+        
+        <div class="table-container">
+            <table id="cableTable">
+                <thead>
+                    <tr>
+                        <th>Cable #</th>
+                        <th>Cable Type (mm²)</th>
+                        <th>Cable Length (m)</th>
+                        <th>Power Tapping (W)</th>
+                        <th>Voltage Drop (Volts)</th>
+                        <th>Voltage at Speaker (Volts)</th>
+                        <th>SPL REDUCTION AT SPEAKER (dB)</th>
+                        <th>Examine</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Table rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="actions">
+            <button id="calculateBtn">Calculate</button>
+            <button id="resetBtn">Reset</button>
+            <button id="downloadExcel">Download as Excel</button>
+        </div>
+        
+        <div class="footer" style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; border-left: 4px solid #e0e0e0;">
+            <h3>System Documentation for the Respective Project</h3>
+            <ul>
+                <li>VDE 0100: Guidelines for the erection of high voltage systems up to 1000 V</li>
+                <li>EN 62368-1: Safety requirements of audio/video, information and communication technology equipment</li>
+                <li>VDE 0165; IEC/EN 60079-14: Explosive atmospheres - Electrical installations design, selection and erection</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Add SheetJS library for client-side Excel generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const cableCountInput = document.getElementById('cableCount');
+            const defaultCableTypeInput = document.getElementById('defaultCableType');
+            const generateTableBtn = document.getElementById('generateTable');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const downloadExcelBtn = document.getElementById('downloadExcel');
+            const tableBody = document.getElementById('tableBody');
+            const excelFileInput = document.getElementById('excelFile');
+            const fileNameSpan = document.getElementById('fileName');
+            const uploadExcelBtn = document.getElementById('uploadExcelBtn');
+            
+            // Default starting voltage (100V line system)
+            const DEFAULT_VOLTAGE = 100;
+            
+            // Event Listeners
+            generateTableBtn.addEventListener('click', generateTable);
+            calculateBtn.addEventListener('click', calculateResults);
+            resetBtn.addEventListener('click', resetTable);
+            downloadExcelBtn.addEventListener('click', downloadAsExcel);
+            
+            // File input event listeners
+            excelFileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    fileNameSpan.textContent = this.files[0].name;
+                } else {
+                    fileNameSpan.textContent = 'No file selected';
+                }
+            });
+            
+            uploadExcelBtn.addEventListener('click', uploadExcelFile);
+            
+            // Generate the example with predefined values
+            loadExample();
+            
+            // Functions
+            function generateTable() {
+                const cableCount = parseInt(cableCountInput.value) || 0;
+                const defaultCableType = parseFloat(defaultCableTypeInput.value) || 2.5;
+                
+                // Clear existing table
+                tableBody.innerHTML = '';
+                
+                for (let i = 1; i <= cableCount; i++) {
+                    const row = document.createElement('tr');
+                    
+                    // Cable number
+                    const cableNumCell = document.createElement('td');
+                    cableNumCell.textContent = i;
+                    row.appendChild(cableNumCell);
+                    
+                    // Cable type (m²)
+                    const cableTypeCell = document.createElement('td');
+                    const cableTypeInput = document.createElement('input');
+                    cableTypeInput.type = 'number';
+                    cableTypeInput.step = '0.01';
+                    cableTypeInput.className = 'input-cell cable-type';
+                    cableTypeInput.placeholder = 'e.g., 2.5';
+                    cableTypeInput.value = defaultCableType;
+                    cableTypeCell.appendChild(cableTypeInput);
+                    row.appendChild(cableTypeCell);
+                    
+                    // Cable length (m)
+                    const cableLengthCell = document.createElement('td');
+                    const cableLengthInput = document.createElement('input');
+                    cableLengthInput.type = 'number';
+                    cableLengthInput.step = '0.1';
+                    cableLengthInput.className = 'input-cell cable-length';
+                    cableLengthInput.placeholder = '';
+                    cableLengthCell.appendChild(cableLengthInput);
+                    row.appendChild(cableLengthCell);
+                    
+                    // Power tapping (W)
+                    const powerTappingCell = document.createElement('td');
+                    const powerTappingInput = document.createElement('input');
+                    powerTappingInput.type = 'number';
+                    powerTappingInput.className = 'input-cell power-tapping';
+                    powerTappingInput.placeholder = '';
+                    powerTappingCell.appendChild(powerTappingInput);
+                    row.appendChild(powerTappingCell);
+                    
+                    // Voltage drop (empty for now)
+                    const voltageDropCell = document.createElement('td');
+                    voltageDropCell.className = 'voltage-drop';
+                    row.appendChild(voltageDropCell);
+                    
+                    // Voltage at speaker (empty for now)
+                    const voltageAtSpeakerCell = document.createElement('td');
+                    voltageAtSpeakerCell.className = 'voltage-at-speaker';
+                    row.appendChild(voltageAtSpeakerCell);
+                    
+                    // SPL reduction (empty for now)
+                    const splReductionCell = document.createElement('td');
+                    splReductionCell.className = 'spl-reduction';
+                    row.appendChild(splReductionCell);
+                    
+                    // Examine status (empty for now)
+                    const examineCell = document.createElement('td');
+                    examineCell.className = 'examine-status';
+                    row.appendChild(examineCell);
+                    
+                    tableBody.appendChild(row);
+                }
+            }
+            
+            function calculateResults() {
+                const rows = tableBody.querySelectorAll('tr');
+                const cables = [];
+                
+                // Collect data from the table
+                rows.forEach((row, index) => {
+                    const cable = {
+                        cableType: parseFloat(row.querySelector('.cable-type').value) || 0,
+                        cableLength: parseFloat(row.querySelector('.cable-length').value) || 0,
+                        powerTapping: parseFloat(row.querySelector('.power-tapping').value) || 0
+                    };
+                    cables.push(cable);
+                });
+                
+                // Send data to server for calculation
+                fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cables: cables }),
+                })
+                .then(response => response.json())
+                .then(results => {
+                    // Update table with results
+                    rows.forEach((row, index) => {
+                        if (index < results.length) {
+                            const result = results[index];
+                            row.querySelector('.voltage-drop').textContent = result.voltageDrop.toFixed(3);
+                            row.querySelector('.voltage-at-speaker').textContent = result.voltageAtSpeaker.toFixed(3);
+                            row.querySelector('.spl-reduction').textContent = result.splReduction.toFixed(3);
+                            
+                            const examineCell = row.querySelector('.examine-status');
+                            examineCell.textContent = result.examineStatus;
+                            examineCell.className = `examine-status ${result.examineStatus.toLowerCase()}`;
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred during calculation.', 'error');
+                });
+            }
+            
+            function resetTable() {
+                generateTable();
+            }
+            
+            function loadExample() {
+                // Set input values for 12 cables
+                cableCountInput.value = 12;
+                defaultCableTypeInput.value = 2.5;
+                
+                // Generate table
+                generateTable();
+                
+                // Cable data from image [length, power]
+                const cableData = [
+                    [15, 25],    // Cable 1
+                    [15, 25],    // Cable 2
+                    [26, 6],     // Cable 3
+                    [25, 25],    // Cable 4
+                    [20, 25],    // Cable 5
+                    [20, 25],    // Cable 6
+                    [38, 25],    // Cable 7
+                    [37, 25],    // Cable 8
+                    [26, 25],    // Cable 9
+                    [39, 25],    // Cable 10
+                    [0, 0],      // Cable 11
+                    [0, 0]       // Cable 12
+                ];
+                
+                // Set cable length and power tapping for each cable
+                const rows = tableBody.querySelectorAll('tr');
+                rows.forEach((row, index) => {
+                    if (index < cableData.length) {
+                        row.querySelector('.cable-length').value = cableData[index][0];
+                        row.querySelector('.power-tapping').value = cableData[index][1];
+                    }
+                });
+                
+                // Calculate results
+                calculateResults();
+            }
+            
+            function downloadAsExcel() {
+                const rows = tableBody.querySelectorAll('tr');
+                const cables = [];
+                
+                // Collect data from the table
+                rows.forEach((row, index) => {
+                    const cable = {
+                        cableType: parseFloat(row.querySelector('.cable-type').value) || 0,
+                        cableLength: parseFloat(row.querySelector('.cable-length').value) || 0,
+                        powerTapping: parseFloat(row.querySelector('.power-tapping').value) || 0,
+                        voltageDrop: parseFloat(row.querySelector('.voltage-drop').textContent) || 0,
+                        voltageAtSpeaker: parseFloat(row.querySelector('.voltage-at-speaker').textContent) || 0,
+                        splReduction: parseFloat(row.querySelector('.spl-reduction').textContent) || 0,
+                        examineStatus: row.querySelector('.examine-status').textContent || ''
+                    };
+                    cables.push(cable);
+                });
+                
+                // Send data to server for Excel generation
+                fetch('/generate_excel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        cables: cables,
+                        numSpeakers: parseInt(cableCountInput.value) || 0,
+                        defaultCableType: parseFloat(defaultCableTypeInput.value) || 2.5
+                    }),
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    // Create a link element to download the file
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'cable1.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Clean up
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    showNotification('Excel downloaded successfully!', 'success');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Failed to generate Excel file.', 'error');
+                });
+            }
+            
+            function showNotification(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                
+                // Add to document
+                document.body.appendChild(notification);
+                
+                // Fade in
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                }, 10);
+                
+                // Fade out and remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            // Add this function for client-side Excel generation
+            function generateExcelClientSide() {
+                // Create a new workbook
+                const wb = XLSX.utils.book_new();
+                
+                // Get data from the table
+                const data = [];
+                
+                // Add headers
+                const headers = ['Cable #', 'Cable Type (mm²)', 'Cable Length (m)', 'Power Tapping (W)', 
+                                'Voltage Drop (Volts)', 'Voltage at Speaker (Volts)', 'SPL REDUCTION AT SPEAKER (dB)', 'Examine'];
+                
+                // Skip adding headers to match template starting at row 12
+                
+                // Add data rows
+                for (let i = 0; i < cables.length; i++) {
+                    if (parseFloat(cables[i].powerTapping) > 0) {
+                        const row = [
+                            i + 1,
+                            cables[i].cableType,
+                            cables[i].cableLength,
+                            cables[i].powerTapping,
+                            parseFloat(document.getElementById('voltageDrop' + i).textContent),
+                            parseFloat(document.getElementById('voltageAtSpeaker' + i).textContent),
+                            parseFloat(document.getElementById('splReduction' + i).textContent),
+                            document.getElementById('examine' + i).textContent
+                        ];
+                        data.push(row);
+                    }
+                }
+                
+                // Create worksheet
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                
+                // Set column widths
+                const colWidths = [10, 15, 15, 15, 15, 20, 25, 15];
+                ws['!cols'] = colWidths.map(w => ({ width: w }));
+                
+                // Set number formats for the calculated values (columns 5-7)
+                for (let i = 0; i < data.length; i++) {
+                    const row = i + 1; // 1-based row index for XLSX
+                    ws[XLSX.utils.encode_cell({r: row-1, c: 4})].z = '0.000'; // Voltage Drop
+                    ws[XLSX.utils.encode_cell({r: row-1, c: 5})].z = '0.000'; // Voltage at Speaker
+                    ws[XLSX.utils.encode_cell({r: row-1, c: 6})].z = '0.000'; // SPL Reduction
+                }
+                
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(wb, ws, "Cable Sizing");
+                
+                // Generate Excel file and trigger download
+                XLSX.writeFile(wb, "cable_sizing.xlsx");
+            }
+
+            // Replace the server-side Excel download with client-side generation
+            document.getElementById('downloadExcel').addEventListener('click', function() {
+                // Use client-side generation instead of server endpoint
+                generateExcelClientSide();
+            });
+
+            // New function to handle Excel file upload
+            function uploadExcelFile() {
+                const fileInput = document.getElementById('excelFile');
+                
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    showNotification('Please select an Excel file to upload', 'error');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // Show loading notification
+                showNotification('Uploading and processing Excel file...', 'success');
+                
+                // Upload the file to the server
+                fetch('/upload_excel', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update number of speakers and default cable type
+                        cableCountInput.value = data.numSpeakers;
+                        defaultCableTypeInput.value = data.defaultCableType;
+                        
+                        // Generate table with the correct number of rows
+                        generateTable();
+                        
+                        // Populate table with the extracted data
+                        const rows = tableBody.querySelectorAll('tr');
+                        
+                        data.cables.forEach((cable, index) => {
+                            if (index < rows.length) {
+                                const row = rows[index];
+                                
+                                // Fill in cable details
+                                row.querySelector('.cable-type').value = cable.cableType;
+                                row.querySelector('.cable-length').value = cable.cableLength;
+                                row.querySelector('.power-tapping').value = cable.powerTapping;
+                                
+                                // Fill in calculated values if they exist
+                                if (cable.voltageDrop !== null) {
+                                    row.querySelector('.voltage-drop').textContent = cable.voltageDrop.toFixed(3);
+                                }
+                                
+                                if (cable.voltageAtSpeaker !== null) {
+                                    row.querySelector('.voltage-at-speaker').textContent = cable.voltageAtSpeaker.toFixed(3);
+                                }
+                                
+                                if (cable.splReduction !== null) {
+                                    row.querySelector('.spl-reduction').textContent = cable.splReduction.toFixed(3);
+                                }
+                                
+                                if (cable.examineStatus !== null) {
+                                    const examineCell = row.querySelector('.examine-status');
+                                    examineCell.textContent = cable.examineStatus;
+                                    examineCell.className = `examine-status ${cable.examineStatus.toLowerCase()}`;
+                                }
+                            }
+                        });
+                        
+                        showNotification('Excel data loaded successfully!', 'success');
+                    } else {
+                        showNotification('Failed to process Excel file: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error uploading Excel file: ' + error.message, 'error');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

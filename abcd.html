@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cable Sizing Calculation</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- SheetJS library for Excel generation in browser -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <!-- FileSaver.js for saving files directly from browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="vector_logo1.png" alt="Logo" id="logo">
+            </div>
+            <h1>Cable Sizing Calculation</h1>
+        </div>
+        
+        <div class="example-info">
+
+            <p class="black-text">Cabling between the system cabinet and speakers which depend on the cable length and the power, the cross section is calculated as follow data input:</p>
+            <p class="black-text">Note: For alarm and evacuation that is most important scenarios. Therefore, the maximum power loss should be - 2 dB. This correspond to a volumne difference of -2dB as recommendation</p>
+        </div>
+        
+        <div class="input-section">
+            <label for="cableCount"><strong>Number of Speakers:</strong></label>
+            <input type="number" id="cableCount" min="1" value="10">
+            
+            <label for="defaultCableType"><strong>Cable Type (mm²):</strong></label>
+            <input type="number" id="defaultCableType" min="0.01" step="0.01" value="2.5">
+            
+            <button id="generateTable">Generate Table</button>
+        </div>
+        
+        <div class="table-container">
+            <table id="cableTable">
+                <thead>
+                    <tr>
+                        <th>Cable #</th>
+                        <th>Cable Type (mm²)</th>
+                        <th>Cable Length (m)</th>
+                        <th>Power Tapping (W)</th>
+                        <th>Voltage Drop (Volts)</th>
+                        <th>Voltage at Speaker (Volts)</th>
+                        <th>SPL REDUCTION AT SPEAKER (dB)</th>
+                        <th>Examine</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Table rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="actions">
+            <button id="calculateBtn">Calculate</button>
+            <button id="resetBtn">Reset</button>
+            <button id="downloadPdfBtn">Download as Excel</button>
+        </div>
+        
+        <div id="pdf-timestamp" class="pdf-timestamp" style="display: none; text-align: center; margin: 20px 0; font-style: italic;">
+            Generated on: <span id="timestamp-value"></span>
+        </div>
+        
+        <div class="footer">
+            <h3>System Documentation for the Respective Project</h3>
+            <ul>
+                <li>VDE 0100: Guidelines for the erection of high voltage systems up to 1000 V</li>
+                <li>EN 62368-1: Safety requirements of audio/video, information and communication technology equipment</li>
+                <li>VDE 0165; IEC/EN 60079-14: Explosive atmospheres - Electrical installations design, selection and erection</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="js/script.js"></script>
+</body>
+</html> 
